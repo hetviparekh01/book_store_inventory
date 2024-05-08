@@ -35,22 +35,7 @@ export class AuthMiddlewares {
             return res.status(401).json({ error: "Invalid token" });
         }
     }
-    jwtAuthProfile(req: Request, res: Response, next: NextFunction) {
-        const token1: string | undefined = req.headers.profile as string || undefined;
-
-        if (!token1) {
-            return res.status(401).json({ error: "Profile Token is not found" });
-        }
-        try {
-            
-            const decoded:any  = jwt.verify(token1, secretKey as string);
-            (req as Request1).profile = decoded
-            next();
-        } catch (error) {
-            console.error(error);
-            return res.status(401).json({ error: "Invalid token" });
-        }
-    }
+   
     generateAccessToken(userData: Tokens) {
         return jwt.sign(userData, secretKey as string, { expiresIn: '24h' });
     }

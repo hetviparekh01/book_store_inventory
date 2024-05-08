@@ -9,9 +9,6 @@ export class BookController{
   async getBooks(req :Request,res :Response ){
     try {
         const searchTerm:any=req.query
-        // const search:any=req.query.search
-        
-        // const filter:any=req.query.filter
 
         const books=await book_service.getBooks(searchTerm)
         res.status(200).json(books)

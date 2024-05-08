@@ -10,10 +10,16 @@ export class BookService {
         const limitsize = 5;
         const skippage = (searchTerm.page - 1) * limitsize;
 
+        // const length=
+
+
         let query:any ={};
         let responsedata:any;
+
+        // console.log(searchTerm.search);
         if(searchTerm.search){
             query.search = { $regex: searchTerm.search, $options: 'i' };
+            // console.log(query.search);
             responsedata = await Book.find({$or:[{title:query.search},{description:query.search}]}).skip(skippage).limit(limitsize);
             if (responsedata) {
                 return responsedata; 
@@ -50,6 +56,7 @@ export class BookService {
         }
         else{ 
             const book=await Book.find({}).skip(skippage).limit(limitsize);
+            return {book,page:`${searchTerm.page}/${book.length}`}
         }
 }   
     

@@ -5,7 +5,7 @@ const UserSchema= new Schema<IUser>(
   {
     name:{
         type:String,
-        required:[true,'name is required']
+        // required:[true,'name is required']
     },
     password:{
         type:String,
