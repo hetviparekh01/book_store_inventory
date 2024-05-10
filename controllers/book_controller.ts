@@ -9,9 +9,13 @@ export class BookController{
   async getBooks(req :Request,res :Response ){
     try {
         const searchTerm:any=req.query
-
+        // const {search,} = req.query
+        //let obj = {search}
         const books=await book_service.getBooks(searchTerm)
-        res.status(200).json(books)
+        res.status(200).json({
+          length:books.length,
+          data:books,
+        })
       } catch (error:any) {
           res.status(500).json({message:error.message})
       }
