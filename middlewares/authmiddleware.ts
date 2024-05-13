@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
-const secretKey: String = "your-secret-key";
-
+import { statuscode } from '../constants/statuscode';
+import { errorMessage } from '../constants/message';
+const secretKey: String = process.env.SECRET_KEY || 'your-secret-key';
 
 export interface Tokens {
     id: string;
@@ -10,7 +11,6 @@ export interface Tokens {
 
 export interface Request1 extends Request {
     user: Tokens;
-    profile: Tokens;
 }
 
 export class AuthMiddlewares {
@@ -18,21 +18,20 @@ export class AuthMiddlewares {
         const token: string | undefined = req.headers.authorization;
         
         if (!token) {
-            return res.status(401).json({ error: "User is not logged in" });
+            return res
+            .status(statuscode.unauthorized)
+            .json({status:false,content:errorMessage.UserIsNotLoggedIn})
+            
         }
         try {
             // console.log(token);
             const decoded: any = jwt.verify(token, secretKey as string);
-
-            // console.log(decoded);
-            // const userId = decoded
             (req as Request1).user = decoded;
-
-
             next();
-        } catch (error) {
-            console.error(error);
-            return res.status(401).json({ error: "Invalid token" });
+        } catch (error:any) {
+            return res
+            .status(statuscode.error)
+            .json({status:false,content:error.message})
         }
     }
    

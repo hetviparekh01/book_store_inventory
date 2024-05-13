@@ -1,101 +1,92 @@
 import { ObjectId } from 'mongoose'
 import Book from '../../models/book_model'
-import Author from '../../models/author_model';
-import Category from '../../models/category_model';
+import { FatalErrorMessage, errorMessage, successMessage } from '../../constants/message';
+import { IResponseType } from '../../interfaces/IResponseType';
+import { IBook } from '../../interfaces/IBook';
 
 export class BookService {
-
-    async getBooks(searchTerm: any) {
-
-        
-        const limitsize = searchTerm.limit || 5;
-        const page=searchTerm.page || 1;
-        const skip = (page - 1) * limitsize;
-      
-        let aggregatedata
-        
-        let dynamicquery={}
-
-
-        if(Object.entries(searchTerm).length===0){
-            aggregatedata= await Book.find({})
-        }
-       else{
-        let regex = { $regex: searchTerm.search, $options: 'i' };
-        aggregatedata= await Book.aggregate([
-            
-            {
-              $lookup: {
-                from: "authors",
-                localField:"author",
-                foreignField:"_id",
-                as: "author_details"
-              }
-            },
-            {
-                $lookup:{
-                    from: "categories",
-                    localField:"category",
-                    foreignField:"_id",
-                    as: "category_details"
-                }
-            },
-            {
-                $unwind: {
-                  path: "$author_details",
-                  includeArrayIndex: 'string'
-                }
-            },
-            {
-                $unwind:{
-                    path: "$category_details",
-                    includeArrayIndex: 'string'
-                }
-            }, 
-            // {
-            //     $match:filterObject
-            // },
-            {
-                $match:{
-                $or:[
-                  {"title":regex},
-                  {"description":regex},
-                  {"author_details.name":searchTerm.filter_author},
-                  {"category_details.name":searchTerm.filter_category}
-                ]
-              }  
-            },
-            {
-
-                $project:{
-                        title:1,
-                        description:1,
-                        "author_details.name":1,
-                        "category_details.name":1,
-                        ISBN:1,
-                        price:1,
-
-
-                }
-                
-            },
-            {
-                $skip:Number(skip)
-            },
-            {
-                $limit:Number(limitsize)
-               
+    async getBooks(searchTerm: any): Promise<IResponseType> {
+        try {
+            const limitsize = searchTerm.limit || 5;
+            const page = searchTerm.page || 1;
+            const skip = (page - 1) * limitsize;
+            let responsedata
+            let dynamicquery = {}
+            if (Object.entries(searchTerm).length === 0) {
+                responsedata = await Book.find({})
             }
-          
-    ])
-    }   
-       
-        // console.log(aggregatedata);
-        if(aggregatedata){
-            return aggregatedata
-        }
-        else{
-            return "no data found"
+            else {
+                let regex = { $regex: searchTerm.search, $options: 'i' };
+                responsedata = await Book.aggregate([
+                    {
+                        $lookup: {
+                            from: "authors",
+                            localField: "author",
+                            foreignField: "_id",
+                            as: "author_details"
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: "categories",
+                            localField: "category",
+                            foreignField: "_id",
+                            as: "category_details"
+                        }
+                    },
+                    {
+                        $unwind: {
+                            path: "$author_details",
+                            includeArrayIndex: 'string'
+                        }
+                    },
+                    {
+                        $unwind: {
+                            path: "$category_details",
+                            includeArrayIndex: 'string'
+                        }
+                    },
+                    // {
+                    //     $match:filterObject
+                    // },
+                    {
+                        $match: {
+                            $or: [
+                                { "title": regex },
+                                { "description": regex },
+                                { "author_details.name": searchTerm.filter_author },
+                                { "category_details.name": searchTerm.filter_category }
+                            ]
+                        }
+                    },
+                    {
+                        $project: {
+                            title: 1,
+                            description: 1,
+                            "author_details.name": 1,
+                            "category_details.name": 1,
+                            ISBN: 1,
+                            price: 1,
+                        }
+
+                    },
+                    {
+                        $skip: Number(skip)
+                    },
+                    {
+                        $limit: Number(limitsize)
+
+                    }
+                ])
+            }
+            if (responsedata) {
+                return { status: true, content: responsedata }
+            }
+            else {
+                throw new Error(FatalErrorMessage.DataNotFound)
+            }
+        } catch (error: any) {
+            return { status: false, content: error.message }
         }
         // // console.log(searchTerm.search);
         // if (searchTerm.search) {
@@ -140,18 +131,54 @@ export class BookService {
         //     return { book, page: `${searchTerm.page}/${book.length}` }
         // }
     }
+    async createBook(bookdata: IBook): Promise<IResponseType> {
+        try {
+            const responsedata = await Book.create({ title: bookdata.title, author: bookdata.author, category: bookdata.category, ISBN: bookdata.ISBN, description: bookdata.description, price: bookdata.price })
 
+            if (responsedata) {
+                return { status: true, content: successMessage.SucessfullyBookCreated }
+            } else {
+                throw new Error(errorMessage.ErrorInCreatingBook)
+            }
+        } catch (error: any) {
+            return { status: false, content: error.message }
+        }
+    }
+    async getBookById(id: string): Promise<IResponseType> {
+        try {
+            const responsedata = await Book.findById(id)
+            if (responsedata) {
+                return { status: true, content: responsedata }
+            } else {
+                throw new Error(FatalErrorMessage.BookNotFound)
+            }
+        } catch (error: any) {
+            return { status: false, content: error.message }
 
-    async createBook(title: string, author: ObjectId, category: ObjectId, ISBN: number, description: string, price: number) {
-        return await Book.create({ title: title, author: author, category: category, ISBN: ISBN, description: description, price: price })
+        }
     }
-    async getBookById(id: string) {
-        return await Book.findById(id)
+    async updateBook(bookid: string, title: string, author: ObjectId, category: ObjectId, ISBN: number, description: string, price: number): Promise<IResponseType> {
+        try {
+            const responsedata = await Book.findByIdAndUpdate(bookid, { title: title, author: author, category: category, ISBN: ISBN, description: description, price: price })
+            if (responsedata) {
+                return { status: true, content: successMessage.SuccessfullyBookUpdated }
+            } else {
+                throw new Error(FatalErrorMessage.BookNotFound)
+            }
+        } catch (error: any) {
+            return { status: false, content: error.message }
+        }
     }
-    async updateBook(bookid: string, title: string, author: ObjectId, category: ObjectId, ISBN: number, description: string, price: number) {
-        return await Book.findByIdAndUpdate(bookid, { title: title, author: author, category: category, ISBN: ISBN, description: description, price: price })
-    }
-    async deleteBook(bookid: string) {
-        return await Book.findByIdAndDelete(bookid)
+    async deleteBook(bookid: string): Promise<IResponseType> {
+        try {
+            const responsedata = await Book.findByIdAndDelete(bookid)
+            if (responsedata) {
+                return { status: true, content: successMessage.SuccessfullyBookDeleted }
+            } else {
+                throw new Error(FatalErrorMessage.BookNotFound)
+            }
+        } catch (error: any) {
+            return { status: false, content: error.message }
+        }
     }
 }

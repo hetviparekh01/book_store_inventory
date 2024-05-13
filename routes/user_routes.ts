@@ -1,10 +1,10 @@
 import express, { Router } from 'express';
-import { SignUpController } from '../controllers/signup_controller';
-import { LoginController } from '../controllers/login_controller';
-import  {UserController} from '../controllers/user_controller';
+import { SignUpController } from '../controllers/user/signup_controller';
+import { LoginController } from '../controllers/user/login_controller';
+import  {UserController} from '../controllers/user/user_controller';
 import { AuthMiddlewares } from '../middlewares/authmiddleware';
 import { RoleMiddleware } from '../middlewares/rolemiddleware';
-import { LogOutController } from '../controllers/logoutcontroller';
+import { LogOutController } from '../controllers/user/logoutcontroller';
 import { ValidateMiddleware } from '../middlewares/validationmiddleware';
 import { userSchemaValidate } from '../validations/validations';
 
@@ -18,6 +18,7 @@ const signup_controller=new SignUpController()
 const middleware=new AuthMiddlewares()
 const rolemiddleware=new RoleMiddleware()
 const uservalidatemiddleware=new ValidateMiddleware(userSchemaValidate)
+
 
 
 
