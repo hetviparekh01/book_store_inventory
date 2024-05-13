@@ -56,7 +56,7 @@ async getCategoryById(req :Request ,res: Response):Promise<Response>{
     if(responsedata.status){
       return res
       .status(statuscode.success)
-      .json(responsedata.content)
+      .json({length:responsedata.length,content:responsedata.content})
     }else{
       return res
       .status(statuscode.NotFound)

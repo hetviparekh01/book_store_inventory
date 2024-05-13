@@ -1,5 +1,6 @@
 
 import { Request, Response, NextFunction } from 'express'
+import { statuscode } from '../constants/statuscode';
 
 
 export class ValidateMiddleware{
@@ -18,7 +19,9 @@ export class ValidateMiddleware{
                 await this.schema.validate(body)
                 return next()
             } catch (error:any) {
-                return res.status(500).json({message:error.message})
+                return res
+                .status(statuscode.error)
+                .json({message:error.message})
             }
         }
 }

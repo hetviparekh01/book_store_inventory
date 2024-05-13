@@ -18,7 +18,7 @@ export class AuthorController{
         if(responsedata.status){
           return res
           .status(statuscode.success)
-          .json(responsedata.content)
+          .json({length:responsedata.length,content:responsedata.content})
         }else{
           return res
           .status(statuscode.NotFound)

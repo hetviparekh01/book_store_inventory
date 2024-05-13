@@ -2,13 +2,10 @@
 import User from '../../models/user_model';
 import { successMessage, errorMessage, FatalErrorMessage } from '../../constants/message'
 import { IResponseType } from '../../interfaces/IResponseType';
-
+import { IUser } from '../../interfaces/IUser';
 
 
 export class UserService {
-
-
-
   async getUsers(): Promise<IResponseType> {
     try {
       const responsedata = await User.find();
@@ -23,7 +20,6 @@ export class UserService {
     }
 
   }
-
   async getUserById(id: string): Promise<IResponseType> {
     try {
       const responsedata = await User.findById(id);
@@ -40,29 +36,21 @@ export class UserService {
     }
 
   }
-
-  async updateUser(id: string, name: string, password: string, role: string): Promise<IResponseType> {
+  async updateUser(userid:string,userdata:IUser): Promise<IResponseType> {
     try {
-
-      // const responsedata=await User.findByIdAndUpdate(id, {name: obj.name , obj.password ,obj.role}, { new: true });
-      const responsedata = await User.findByIdAndUpdate(id, { name, password, role }, { new: true })
-
+      const responsedata = await User.findByIdAndUpdate(userid, {name:userdata.name,password:userdata.password,role:userdata.role}, { new: true })
       if (responsedata) {
         return { status: true, content: successMessage.SuccessfullyUserUpdated }
       }
       else {
         throw new Error(FatalErrorMessage.UserNotFound)
       }
-
     }
     catch (error: any) {
       return { status: false, content: error.message };
     }
   }
-
-
   async deleteUser(userid: string): Promise<IResponseType> {
-
     try {
       const responsedata= await User.findByIdAndDelete(userid)
 
@@ -75,7 +63,6 @@ export class UserService {
     } catch (error:any) {
       return {status:false,content:error.message}
     }
-   
   }
 }
 

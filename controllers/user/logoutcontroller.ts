@@ -7,7 +7,6 @@ import { errorMessage } from '../../constants/message'
 const logoutservice=new LogOutService()
 
 export class LogOutController{
- 
     async logout(req:Request,res:Response):Promise<Response>{
         try {
         const userToken:Tokens=(req as Request1).user

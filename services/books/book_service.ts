@@ -4,19 +4,37 @@ import { FatalErrorMessage, errorMessage, successMessage } from '../../constants
 import { IResponseType } from '../../interfaces/IResponseType';
 import { IBook } from '../../interfaces/IBook';
 
+
+
 export class BookService {
     async getBooks(searchTerm: any): Promise<IResponseType> {
         try {
             const limitsize = searchTerm.limit || 5;
             const page = searchTerm.page || 1;
             const skip = (page - 1) * limitsize;
-            let responsedata
-            let dynamicquery = {}
+            let responsedata;
+
+            let filterObject_author:any={}
+            let filterObject_category:any={}
+            let matchObject:any={}
+            let regex = { $regex: searchTerm.search, $options: 'i' };
+            if(searchTerm.filter_author ){
+                filterObject_author["author_details.name"]=searchTerm.filter_author
+            }
+            if(searchTerm.filter_category){
+                filterObject_category["category_details.name"]=searchTerm.filter_category
+            }
+            if(searchTerm.search){
+                matchObject["$or"]=[
+                    {"title": regex},
+                    {"description":regex},
+                ]
+            }
             if (Object.entries(searchTerm).length === 0) {
                 responsedata = await Book.find({})
             }
             else {
-                let regex = { $regex: searchTerm.search, $options: 'i' };
+                // let regex = { $regex: searchTerm.search, $options: 'i' };
                 responsedata = await Book.aggregate([
                     {
                         $lookup: {
@@ -35,7 +53,7 @@ export class BookService {
                         }
                     },
                     {
-                        $unwind: {
+                        $unwind: {  
                             path: "$author_details",
                             includeArrayIndex: 'string'
                         }
@@ -46,18 +64,14 @@ export class BookService {
                             includeArrayIndex: 'string'
                         }
                     },
-                    // {
-                    //     $match:filterObject
-                    // },
                     {
-                        $match: {
-                            $or: [
-                                { "title": regex },
-                                { "description": regex },
-                                { "author_details.name": searchTerm.filter_author },
-                                { "category_details.name": searchTerm.filter_category }
-                            ]
-                        }
+                        $match:filterObject_author
+                    },
+                    {
+                        $match:filterObject_category
+                    },
+                    {
+                        $match:matchObject
                     },
                     {
                         $project: {
@@ -79,8 +93,9 @@ export class BookService {
                     }
                 ])
             }
+            // console.log(responsedata.length);
             if (responsedata) {
-                return { status: true, content: responsedata }
+                return { status: true, content: responsedata,length:responsedata.length }
             }
             else {
                 throw new Error(FatalErrorMessage.DataNotFound)
@@ -157,9 +172,9 @@ export class BookService {
 
         }
     }
-    async updateBook(bookid: string, title: string, author: ObjectId, category: ObjectId, ISBN: number, description: string, price: number): Promise<IResponseType> {
+    async updateBook(bookid: string,bookdata:IBook): Promise<IResponseType> {
         try {
-            const responsedata = await Book.findByIdAndUpdate(bookid, { title: title, author: author, category: category, ISBN: ISBN, description: description, price: price })
+            const responsedata = await Book.findByIdAndUpdate(bookid, { title: bookdata.title, author: bookdata.author, category: bookdata.category, ISBN: bookdata.ISBN, description: bookdata.description, price: bookdata.price })
             if (responsedata) {
                 return { status: true, content: successMessage.SuccessfullyBookUpdated }
             } else {

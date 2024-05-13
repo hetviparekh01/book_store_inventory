@@ -2,7 +2,7 @@ import {Request,Response} from 'express'
 import { LoginService } from '../../services/user/login_service'
 import { statuscode } from '../../constants/statuscode';
 import { FatalErrorMessage, errorMessage } from '../../constants/message';
-
+import { IUser } from '../../interfaces/IUser';
 const loginservice=new LoginService()
 
 export class LoginController{
@@ -10,7 +10,9 @@ export class LoginController{
         try {
             const username: string = req.body.name;
             const passwordwithouthasded: string = req.body.password;
-            const responsedata=await loginservice.login(username,passwordwithouthasded)
+            const role=req.body.role;
+            const userdata:object={name,passwordwithouthasded,role}
+            const responsedata=await loginservice.login(userdata as IUser)
             if(responsedata.status){
                 return res
                 .status(statuscode.success)

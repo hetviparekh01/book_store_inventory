@@ -11,22 +11,25 @@ export class AuthorService{
         const page=searchTerm.page || 1
         const skip=(page-1)*limitsize
         let responsedata:any;
-       
-
-
+        let filterObject_nationality:any={}
+        let matchObject:any={}
+        let regex={$regex:searchTerm.search,$options:'i'}
+        if(searchTerm.filter_nationality){
+            filterObject_nationality['nationality']=searchTerm.filter_nationality
+        }
+        if(searchTerm.search){
+            matchObject['name']=regex
+        }
         if(Object.entries(searchTerm).length===0){
             responsedata=await Author.find({})
         }
         else{
-            let regex={$regex:searchTerm.search,$options:'i'}
             responsedata=await Author.aggregate([
                 {
-                    $match:{
-                        $or:[
-                            {"nationality":searchTerm.filter_nationality},
-                            {"name":regex}
-                        ]
-                    }
+                    $match:filterObject_nationality
+                },
+                {
+                    $match:matchObject
                 },
                 {
                     $project:{
@@ -45,7 +48,7 @@ export class AuthorService{
             ])
         }
         if (responsedata) {
-            return { status: true, content: responsedata }
+            return { status: true, content: responsedata ,length:responsedata.length}
         }
         else {
             throw new Error(FatalErrorMessage.DataNotFound)

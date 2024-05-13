@@ -2,7 +2,7 @@ import { Request, Response, NextFunction} from 'express';
 import { UserService } from '../../services/user/userservice';
 import { successMessage, errorMessage, FatalErrorMessage } from '../../constants/message'
 import { statuscode } from '../../constants/statuscode';
-
+import { IUser } from '../../interfaces/IUser';
 
 const userservice = new UserService()
 
@@ -62,9 +62,9 @@ export class UserController {
     try {
       const id = req.params.id
       const { name, password, role } = req.body;
-      // const obj:object={name,password,role}
+      const userdata:object={name,password,role}
 
-      const responsedata = await userservice.updateUser(id, name,password,role);
+      const responsedata = await userservice.updateUser(id,userdata as IUser);
 
       if (responsedata.status) {
         return res

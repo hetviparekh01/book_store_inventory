@@ -1,7 +1,8 @@
 
 import mongoose,{ Schema } from "mongoose";
 import { IBook } from "../interfaces/IBook";
-
+import Author from './author_model';
+import Category from "./category_model";
 const BookSchema =new Schema<IBook>(
     {
         title: {
@@ -36,8 +37,39 @@ const BookSchema =new Schema<IBook>(
     }
 )
 
+
+
+BookSchema.pre('save', async function(next) {
+    try {
+        const author = await Author.findById(this.author);
+        if(author) {
+            next();
+        }
+        else{
+            throw new Error('Author does not exist'); 
+        }  
+    } catch (error:any) {
+        next(error); 
+    }
+});
+
+BookSchema.pre('save', async function(next) {
+    try {
+        const category = await Category.findById(this.category);
+        if(category) {
+            next();
+        }
+        else{
+            throw new Error('Category does not exist'); 
+        }  
+    } catch (error:any) {
+        next(error); 
+    }
+});
+
+
+
+
 const Book =mongoose.model('Book',BookSchema)
-
-
 
 export default Book;

@@ -6,28 +6,24 @@ import Category from '../../models/category_model'
 
 export class CategoryService{
     async getCategories(searchTerm:any):Promise<IResponseType>{
-    
         try {
             const limitsize=searchTerm.limit || 5
             const page=searchTerm.page || 1
             const skip=(page-1)*limitsize
             let responsedata:any;
-          
-    
-    
+            let matchObject:any={};
+            let regex={$regex:searchTerm.search,$options:'i'}
+            if(searchTerm.search){
+                matchObject['name']=regex;
+            }
             if(Object.entries(searchTerm).length===0){
                 responsedata=await Category.find({})
             }
             else{
-                let regex={$regex:searchTerm.search,$options:'i'}
+                // let regex={$regex:searchTerm.search,$options:'i'}
                 responsedata=await Category.aggregate([
                     {
-                        $match:{
-                            $or:[
-                                {"name":regex},
-                                {"nationality":regex}
-                            ]
-                        }
+                        $match:matchObject
                     },
                     {
                         $project:{
@@ -46,7 +42,7 @@ export class CategoryService{
                 ])
             }
             if (responsedata) {
-                return { status: true, content: responsedata }
+                return { status: true, content: responsedata,length:responsedata.length}
             }
             else {
                 throw new Error(FatalErrorMessage.DataNotFound)

@@ -13,9 +13,8 @@ export class BookController {
   async getBooks(req: Request, res: Response): Promise<Response> {
     try {
       const searchTerm: any = req.query
-      // const {search,} = req.query
-      //let obj = {search}
       const responsedata = await book_service.getBooks(searchTerm)
+      // console.log(responsedata.length);
       if (responsedata.status) {
         return res
           .status(statuscode.success)
@@ -89,7 +88,8 @@ export class BookController {
       const ISBN: number = req.body.ISBN
       const description: string = req.body.description
       const price: number = req.body.price
-      const responsedata = await book_service.updateBook(id, title, author, category, ISBN, description, price)
+      const bookdata: object = { title, author, category, ISBN, description, price }
+      const responsedata = await book_service.updateBook(id,bookdata as IBook)
       if (responsedata.status) {
         return res
           .status(statuscode.success)
