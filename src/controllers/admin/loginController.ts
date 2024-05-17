@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { LoginService } from "@services";
-import { statuscode } from "../../constants/statuscode";
-import { FatalErrorMessage, errorMessage } from "../../constants/message";
+import { FatalErrorMessage, errorMessage,statuscode } from "@constants";
 import { IUser } from "@interfaces";
 const loginservice = new LoginService();
 

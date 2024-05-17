@@ -1,8 +1,7 @@
 import { SignUpService } from "@services";
 import { Request, Response, response } from "express";
-import { PasswordHashing } from "../../utils/bcryptpassword";
-import { statuscode } from "../../constants/statuscode";
-import { errorMessage } from "../../constants/message";
+import { PasswordHashing } from "@utils";
+import { errorMessage,statuscode } from "@constants";
 import { IUser } from "@interfaces";
 
 const signup_service = new SignUpService();

@@ -4,8 +4,8 @@ import {
      successMessage,
      errorMessage,
      FatalErrorMessage,
-} from "../../constants/message";
-import { statuscode } from "../../constants/statuscode";
+     statuscode
+} from "@constants";
 import { IUser } from "@interfaces";
 
 const userservice = new UserService();

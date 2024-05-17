@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { BookService } from "@services";
 import { ObjectId } from "mongoose";
-import { statuscode } from "../../constants/statuscode";
-import { errorMessage } from "../../constants/message";
+import { errorMessage ,statuscode} from "@constants";
 import { IBook } from "@interfaces";
 
 const book_service = new BookService();

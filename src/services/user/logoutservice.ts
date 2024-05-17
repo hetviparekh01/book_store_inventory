@@ -1,4 +1,4 @@
-import { errorMessage, successMessage } from "../../constants/message";
+import { errorMessage, successMessage } from "@constants";
 import { IResponseType } from "@interfaces";
 import { User } from "@models";
 

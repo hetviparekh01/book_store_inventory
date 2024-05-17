@@ -1,6 +1,6 @@
 import express from "express";
-import router from "../routes/index";
-import { connectDB } from "./db";
+import router from "./src/routes/index";
+import { connectDB } from "./src/db/db";
 import config from "config";
 
 const app = express();
@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", router);
-const port = config.get("localhost.port");
+const port = config.get("port") || 8000;
 
 connectDB()
      .then(() => {

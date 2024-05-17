@@ -1,9 +1,9 @@
 import { User } from "@models";
-import { PasswordHashing } from "../../utils/bcryptpassword";
+import { PasswordHashing } from "@utils";
 import { AuthMiddlewares, Tokens } from "@middlewares";
-import { IResponseType } from "@interfaces";
-import { FatalErrorMessage, successMessage } from "../../constants/message";
-import { IUser } from "@interfaces";
+import { IResponseType,IUser } from "@interfaces";
+import { FatalErrorMessage, successMessage } from "@constants";
+
 const middleware = new AuthMiddlewares();
 const passwordhashing = new PasswordHashing();
 

@@ -15,11 +15,13 @@ author_route.post(
      validationmiddleware.validator,
      author_controller.createAuthor
 );
-author_route.get("/getauthorbyid/:id", author_controller.getAuthorById);
+author_route.get(
+     "/getauthorbyid/:id", 
+     author_controller.getAuthorById
+);
 author_route.put(
      "/updateauthor/:id",
      rolemiddleware.jwtAuthRole,
-     validationmiddleware.validator,
      author_controller.updateAuthor
 );
 author_route.delete(

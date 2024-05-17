@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
+import config from "config";
 import { Request, Response, NextFunction } from "express";
-import { statuscode } from "../constants/statuscode";
-import { errorMessage } from "../constants/message";
-const secretKey: String = process.env.SECRET_KEY || "your-secret-key";
+import { errorMessage ,statuscode} from "@constants";
+const secretKey: String = config.get("secret-key") || "your-secret-key";
 
 export interface Tokens {
      id: string;

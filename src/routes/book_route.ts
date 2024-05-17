@@ -8,18 +8,23 @@ const book_controller = new BookController();
 const rolemiddleware = new RoleMiddleware();
 const validationmiddleware = new ValidateMiddleware(bookSchemaValidate);
 
-book_route.get("/getbooks", book_controller.getBooks);
+book_route.get(
+     "/getbooks", 
+     book_controller.getBooks
+);
 book_route.post(
      "/addbook",
      rolemiddleware.jwtAuthRole,
      validationmiddleware.validator,
      book_controller.createBook
 );
-book_route.get("/getbookbyid/:id", book_controller.getBookById);
+book_route.get(
+     "/getbookbyid/:id",
+      book_controller.getBookById
+);
 book_route.put(
      "/updatebook/:id",
      rolemiddleware.jwtAuthRole,
-     validationmiddleware.validator,
      book_controller.updateBook
 );
 book_route.delete(

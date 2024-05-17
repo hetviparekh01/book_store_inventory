@@ -1,28 +1,31 @@
-const searchQuery = (arr: any, searchTerm: any) => {
+export const searchQuery = (arr: any[][], searchTerm: any):any => {
      let dynamicquery: any = {
           $match: {},
      };
-     let regex = { $regex: searchTerm?.search, $options: "i" };
-     let $and = [{}];
+     // console.log(arr);
+     let $and:any = [{}];
 
-     if (searchTerm.filter_author) {
-          $and.push({ "author_details.name": searchTerm.filter_author });
+     let andfeilds =arr[1].map(ele =>{
+          return ele;
+     })
+     let orfeilds = arr[0].map(ele=>{
+          return ele;
+     });
+
+
+     // arr[1].length>0?arr[1].forEach(ele=>$and.push(ele)):null
+     if(andfeilds.length>0){
+          dynamicquery.$match = {
+               ...dynamicquery.$match,
+               $and:andfeilds
+          };
      }
-     if (searchTerm.filter_category) {
-          $and.push({ "category_details.name": searchTerm.filter_category });
-     }
-     dynamicquery.$match = {
-          ...dynamicquery.$match,
-          $and,
-     };
+   
      if (searchTerm.search) {
           dynamicquery.$match = {
                ...dynamicquery.$match,
-               $add: [
-                    arr.and.map((val: string) => {
-                         val: regex;
-                    }),
-               ],
+               $or: orfeilds
           };
      }
+     return dynamicquery;
 };

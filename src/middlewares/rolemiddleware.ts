@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
+import config from "config";
 import { Request, Response, NextFunction } from "express";
-const secretKey: String = process.env.SECRET_KEY || "your-secret-key";
-import { statuscode } from "../constants/statuscode";
-import { FatalErrorMessage, errorMessage } from "../constants/message";
+import { FatalErrorMessage, errorMessage,statuscode } from "@constants";
 import { User } from "@models";
 import { IUser } from "@interfaces";
+const secretKey: String = config.get("secret-key") || "your-secret-key";
 
 export class RoleMiddleware {
      async jwtAuthRole(req: Request, res: Response, next: NextFunction) {

@@ -1,8 +1,7 @@
 import { User } from "@models";
-import { IResponseType } from "@interfaces";
-import { errorMessage, successMessage } from "../../constants/message";
+import { IResponseType,IUser } from "@interfaces";
+import { errorMessage, successMessage } from "@constants";
 import { Error } from "mongoose";
-import { IUser } from "@interfaces";
 
 export class SignUpService {
      async signup(userdata: IUser): Promise<IResponseType> {

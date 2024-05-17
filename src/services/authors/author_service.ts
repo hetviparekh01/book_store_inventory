@@ -2,52 +2,84 @@ import {
      errorMessage,
      FatalErrorMessage,
      successMessage,
-} from "../../constants/message";
+} from "@constants";
 import { IAuthor, IResponseType } from "@interfaces";
+import { searchQuery,paginationQuerySkip,paginationQueryLimit } from "@utils";
 import { Author } from "@models";
 
 export class AuthorService {
-     async getAuthors(searchTerm: any): Promise<IResponseType> {
+     async getAuthor(searchTerm: any): Promise<IResponseType> {
           try {
-               const limitsize = searchTerm.limit || 5;
-               const page = searchTerm.page || 1;
-               const skip = (page - 1) * limitsize;
-               let responsedata: any;
-               let filterObject_nationality: any = {};
-               let matchObject: any = {};
                let regex = { $regex: searchTerm.search, $options: "i" };
-               if (searchTerm.filter_nationality) {
-                    filterObject_nationality["nationality"] =
-                         searchTerm.filter_nationality;
+
+               let feildArray:any[][]=[]
+               let and:object[]=[]
+               let or:object[]=[]
+               
+               if(searchTerm.search){
+                    or.push({'name':regex})
+                    
                }
-               if (searchTerm.search) {
-                    matchObject["name"] = regex;
+               if(searchTerm.filter_nationality){
+                   and.push({"nationality":searchTerm.filter_nationality})
+                  
                }
-               if (Object.entries(searchTerm).length === 0) {
-                    responsedata = await Author.find({});
-               } else {
-                    responsedata = await Author.aggregate([
-                         {
-                              $match: filterObject_nationality,
+               feildArray.push(or,and);
+               let dynamicquery=searchQuery(feildArray as any,searchTerm)
+               let paginationskipquery=paginationQuerySkip(searchTerm)
+               let paginationlimitquery=paginationQueryLimit(searchTerm)
+               // console.log(dynamicquery);
+
+               
+               // let dynamicquery: any = {
+               //      $match: {},
+               // };
+               // let regex = { $regex: searchTerm.search, $options: "i" };
+               // let $and = [{}];
+
+               // console.log(searchTerm.filter_author);
+               // if (searchTerm.filter_author) {
+               //      $and.push({
+               //           "author_details.name": searchTerm.filter_author,
+               //      });
+               // }
+               // console.log($and);
+
+               // if (searchTerm.filter_category) {
+               //      $and.push({
+               //           "category_details.name": searchTerm.filter_category,
+               //      });
+               // }
+               // dynamicquery.$match = {
+               //      ...dynamicquery.$match,
+               //      $and,
+               // };
+               // if (searchTerm.search) {
+               //      dynamicquery.$match = {
+               //           ...dynamicquery.$match,
+               //           $or: [
+               //                { title: regex },
+               //                { description: regex },
+               //           ],
+               //      };
+               // }
+
+
+               // console.log(dynamicquery);
+             
+               let responsedata = await Author.aggregate([
+                    dynamicquery,
+                    {
+                         $project: {
+                              name: 1,
+                              biography:1,
+                              nationality: 1
                          },
-                         {
-                              $match: matchObject,
-                         },
-                         {
-                              $project: {
-                                   name: 1,
-                                   biography: 1,
-                                   nationality: 1,
-                              },
-                         },
-                         {
-                              $skip: Number(skip),
-                         },
-                         {
-                              $limit: Number(limitsize),
-                         },
-                    ]);
-               }
+                    },
+                    paginationskipquery,
+                    paginationlimitquery
+               ]);
+               
                if (responsedata) {
                     return {
                          status: true,
@@ -60,27 +92,6 @@ export class AuthorService {
           } catch (error: any) {
                return { status: false, content: error.message };
           }
-          // let query:any ={};
-          // if(searchTerm.search){
-          //     query.search = { $regex: searchTerm.search, $options: 'i' };
-          //     responsedata = await Author.find({$or:[{name:query.search},{biography:query.search}]}).skip(skippage).limit(limitsize);
-
-          //     if (responsedata.length!==0) {
-          //         return responsedata;
-          //     }
-          //      else {
-          //         return { message: "No author found matching the search term" };
-          //     }
-
-          // }
-          //    const data= await Author.find({}).skip(skippage).limit(limitsize);
-
-          //    if(data.length !== 0){
-          //        return data
-          //   }
-          //    else{
-          //        return {message:"author is not found in this page"}
-          //    }
      }
      async createAuthor(authordata: IAuthor): Promise<IResponseType> {
           try {

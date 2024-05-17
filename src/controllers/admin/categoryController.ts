@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { CategoryService } from "@services";
 import { ICategory } from "@interfaces";
-import { statuscode } from "../../constants/statuscode";
-import { errorMessage } from "../../constants/message";
+import { errorMessage ,statuscode} from "@constants";
 
 const category_service = new CategoryService();
 
@@ -15,7 +14,10 @@ export class CategoryController {
                if (responsedata.status) {
                     return res
                          .status(statuscode.success)
-                         .json(responsedata.content);
+                         .json({
+                              length: responsedata.length,
+                              content: responsedata.content,
+                         });
                } else {
                     return res
                          .status(statuscode.NotFound)

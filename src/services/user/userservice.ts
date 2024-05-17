@@ -3,7 +3,7 @@ import {
      successMessage,
      errorMessage,
      FatalErrorMessage,
-} from "../../constants/message";
+} from "@constants";
 import { IResponseType } from "@interfaces";
 import { IUser } from "@interfaces";
 

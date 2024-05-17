@@ -1,0 +1,5 @@
+{
+    "url": "mongodb+srv://hetvi01:mongo_01@backenddb.oe9ottm.mongodb.net/book_inventory_management?retryWrites=true&w=majority&appName=backendDB",
+    "port": 3000,
+    "secret-key": "your-secret-key"
+}

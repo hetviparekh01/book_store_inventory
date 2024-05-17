@@ -1,7 +1,5 @@
 {
-     "localhost": {
-          "url": "",
-          "port": "",
-          "secret-key": ""
-     }
+     "url": "mongodb+srv://hetvi01:mongo_01@backenddb.oe9ottm.mongodb.net/book_inventory_management_dev?retryWrites=true&w=majority&appName=backendDB",
+     "port": 3005,
+     "secret-key": "your-secret-key"
 }

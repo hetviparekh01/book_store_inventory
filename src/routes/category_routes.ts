@@ -8,18 +8,23 @@ const category_controller = new CategoryController();
 const rolemiddleware = new RoleMiddleware();
 const validationmiddleware = new ValidateMiddleware(categorySchemaValidate);
 
-category_route.get("/getcategories", category_controller.getCategories);
+category_route.get(
+     "/getcategories", 
+     category_controller.getCategories
+);
 category_route.post(
      "/addcategory",
      rolemiddleware.jwtAuthRole,
      validationmiddleware.validator,
      category_controller.createCategory
 );
-category_route.get("/getcategorybyid/:id", category_controller.getCategoryById);
+category_route.get(
+     "/getcategorybyid/:id",
+     category_controller.getCategoryById
+);
 category_route.put(
      "/updatecategory/:id",
      rolemiddleware.jwtAuthRole,
-     validationmiddleware.validator,
      category_controller.updateCategory
 );
 category_route.delete(

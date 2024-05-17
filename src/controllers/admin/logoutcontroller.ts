@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { LogOutService } from "@services";
 import { Request1, Tokens } from "@middlewares";
-import { statuscode } from "../../constants/statuscode";
-import { errorMessage } from "../../constants/message";
+import { errorMessage,statuscode } from "@constants";
 
 const logoutservice = new LogOutService();
 

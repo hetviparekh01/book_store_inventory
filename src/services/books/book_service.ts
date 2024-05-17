@@ -3,9 +3,9 @@ import {
      FatalErrorMessage,
      errorMessage,
      successMessage,
-} from "../../constants/message";
-import { IResponseType } from "@interfaces";
-import { IBook } from "@interfaces";
+} from "@constants";
+import { IResponseType,IBook} from "@interfaces";
+import { searchQuery,paginationQueryLimit, paginationQuerySkip } from "@utils";
 
 export class BookService {
      // async getBooks(searchTerm: any): Promise<IResponseType> {
@@ -148,41 +148,65 @@ export class BookService {
      // }
      async getbook(searchTerm: any): Promise<IResponseType> {
           try {
-               const limitsize = searchTerm.limit || 5;
-               const page = searchTerm.page || 1;
-               const skip = (page - 1) * limitsize;
-               let dynamicquery: any = {
-                    $match: {},
-               };
-               let regex = { $regex: searchTerm.search, $options: "i" };
-               let $and = [{}];
+               let regex = { $regex: searchTerm?.search, $options: "i" };
 
-               if (searchTerm.filter_author) {
-                    $and.push({
-                         "author_details.name": searchTerm.filter_author,
-                    });
+               let feildArray:any[][]=[]
+               let and:object[]=[]
+               let or:object[]=[]
+               
+               if(searchTerm.search){
+                    or.push({'title':regex},{'description':regex})
                }
-
-               if (searchTerm.filter_category) {
-                    $and.push({
-                         "category_details.name": searchTerm.filter_category,
-                    });
+               if(searchTerm.filter_author){
+                   and.push({"author_details.name":searchTerm.filter_author})
                }
-               dynamicquery.$match = {
-                    ...dynamicquery.$match,
-                    $and,
-               };
-               if (searchTerm.search) {
-                    dynamicquery.$match = {
-                         ...dynamicquery.$match,
-                         $or: [
-                              { title: regex },
-                              { description: regex },
-                              { "author_details.name": regex },
-                         ],
-                    };
+               if(searchTerm.filter_category){
+                    and.push({"category_details.name":searchTerm.filter_category})
                }
+              
+               feildArray.push(or,and);
+               let dynamicquery=searchQuery(feildArray as any,searchTerm)
+               let paginationskipquery=paginationQuerySkip(searchTerm)
+               let paginationlimitquery=paginationQueryLimit(searchTerm)
                // console.log(dynamicquery);
+
+               
+               // let dynamicquery: any = {
+               //      $match: {},
+               // };
+               // let regex = { $regex: searchTerm.search, $options: "i" };
+               // let $and = [{}];
+
+               // console.log(searchTerm.filter_author);
+               // if (searchTerm.filter_author) {
+               //      $and.push({
+               //           "author_details.name": searchTerm.filter_author,
+               //      });
+               // }
+               // console.log($and);
+
+               // if (searchTerm.filter_category) {
+               //      $and.push({
+               //           "category_details.name": searchTerm.filter_category,
+               //      });
+               // }
+               // dynamicquery.$match = {
+               //      ...dynamicquery.$match,
+               //      $and,
+               // };
+               // if (searchTerm.search) {
+               //      dynamicquery.$match = {
+               //           ...dynamicquery.$match,
+               //           $or: [
+               //                { title: regex },
+               //                { description: regex },
+               //           ],
+               //      };
+               // }
+
+
+               // console.log(dynamicquery);
+             
                let responsedata = await Book.aggregate([
                     {
                          $lookup: {
@@ -203,14 +227,24 @@ export class BookService {
                     {
                          $unwind: {
                               path: "$author_details",
-                              includeArrayIndex: "string",
+                              // includeArrayIndex: "string",
                          },
                     },
                     {
                          $unwind: {
                               path: "$category_details",
-                              includeArrayIndex: "string",
+                              // includeArrayIndex: "string",
                          },
+                    },
+                    {
+                         $addFields: {
+                           date: {
+                             $dateToString:{
+                               format:"%Y-%m-%d",
+                               date:"$createdAt"
+                             }
+                           }
+                         }
                     },
                     dynamicquery,
                     {
@@ -221,15 +255,13 @@ export class BookService {
                               "category_details.name": 1,
                               ISBN: 1,
                               price: 1,
+                              date:1,
                          },
                     },
-                    {
-                         $skip: Number(skip),
-                    },
-                    {
-                         $limit: Number(limitsize),
-                    },
+                    paginationskipquery,
+                    paginationlimitquery
                ]);
+               
                if (responsedata) {
                     return {
                          status: true,

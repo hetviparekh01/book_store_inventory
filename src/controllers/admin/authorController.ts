@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { AuthorService } from "@services";
 import { IAuthor } from "@interfaces";
-import { statuscode } from "../../constants/statuscode";
-import { errorMessage } from "../../constants/message";
+import { errorMessage ,statuscode} from "@constants";
+
 
 const author_service = new AuthorService();
 
@@ -10,7 +10,7 @@ export class AuthorController {
      async getAuthors(req: Request, res: Response): Promise<Response> {
           try {
                const searchTerm: any = req.query;
-               const responsedata = await author_service.getAuthors(searchTerm);
+               const responsedata = await author_service.getAuthor(searchTerm);
 
                if (responsedata.status) {
                     return res
@@ -35,6 +35,7 @@ export class AuthorController {
      }
      async createAuthor(req: Request, res: Response): Promise<Response> {
           try {
+               // const {name ,biography,nationality}=req.body
                const name: string = req.body.name;
                const biography: string = req.body.biography;
                const nationality: string = req.body.nationality;

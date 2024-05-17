@@ -38,7 +38,11 @@ user_route.get(
      rolemiddleware.jwtAuthRole,
      user_controller.getUsers
 );
-user_route.post("/logout", middleware.jwtAuthUser, logout_controller.logout);
+user_route.post(
+     "/logout",
+     middleware.jwtAuthUser, 
+     logout_controller.logout
+);
 user_route.get(
      "/getuserbyid/:id",
      middleware.jwtAuthUser,
@@ -48,7 +52,6 @@ user_route.get(
 user_route.put(
      "/updateuser/:id",
      middleware.jwtAuthUser,
-     rolemiddleware.jwtAuthRole,
      user_controller.updateUser
 );
 user_route.delete(
