@@ -12,11 +12,11 @@ export class SignUpController {
           try {
                const name = req.body.name;
                const passwordwithouthasded = req.body.password;
-               const passwordwithhased = await password_hashing.passwordEncrypt(
+               const password = await password_hashing.passwordEncrypt(
                     passwordwithouthasded
                );
                const role = req.body.role;
-               const userdata: object = { name, passwordwithhased, role };
+               const userdata: object = { name, password, role };
                const responsedata = await signup_service.signup(
                     userdata as IUser
                );

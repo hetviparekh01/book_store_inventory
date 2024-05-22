@@ -5,6 +5,7 @@ import { Error } from "mongoose";
 
 export class SignUpService {
      async signup(userdata: IUser): Promise<IResponseType> {
+         
           try {
                const responsedata = await User.create({
                     name: userdata.name,

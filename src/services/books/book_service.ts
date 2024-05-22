@@ -148,7 +148,8 @@ export class BookService {
      // }
      async getbook(searchTerm: any): Promise<IResponseType> {
           try {
-               let regex = { $regex: searchTerm?.search, $options: "i" };
+               let searchfeild=searchTerm.search.trim()
+               let regex = { $regex:searchfeild, $options: "i" };
 
                let feildArray:any[][]=[]
                let and:object[]=[]
@@ -164,7 +165,7 @@ export class BookService {
                     and.push({"category_details.name":searchTerm.filter_category})
                }
               
-               feildArray.push(or,and);
+               feildArray.push(and,or);
                let dynamicquery=searchQuery(feildArray as any,searchTerm)
                let paginationskipquery=paginationQuerySkip(searchTerm)
                let paginationlimitquery=paginationQueryLimit(searchTerm)
