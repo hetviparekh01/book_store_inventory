@@ -33,12 +33,12 @@ export class BookController {
      //       .json({ status: false, content: errorMessage.ErrorInGettingBook })
      //   }
      // }
-     async getBooks(req: Request, res: Response): Promise<Response> {
+     async getBooksByFilteration(req: Request, res: Response): Promise<Response> {
           try {
                const searchTerm: any = req.query;
 
                //const {} = req.query
-               const responsedata = await book_service.getbook(searchTerm);
+               const responsedata = await book_service.getBooksByFilteration(searchTerm);
                // console.log(responsedata.length);
                if (responsedata.status) {
                     return res.status(statuscode.success).json({
@@ -96,10 +96,9 @@ export class BookController {
                     });
           }
      }
-     async getBookById(req: Request, res: Response): Promise<Response> {
+     async getBook(req: Request, res: Response): Promise<Response> {
           try {
-               const id = req.params.id;
-               const responsedata = await book_service.getBookById(id);
+               const responsedata = await book_service.getBook();
                if (responsedata.status) {
                     return res
                          .status(statuscode.success)

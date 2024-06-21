@@ -30,3 +30,16 @@ export const userUpdateSchemaValidate = Yup.object({
      password: Yup.string().required("password is required"),
      role: Yup.string().required("role is required"),
 }).noUnknown("You are adding an extra feild").strict();
+
+
+
+
+
+
+
+
+
+
+
+
+

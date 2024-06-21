@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { LogOutService } from "@services";
-import { Request1, Tokens } from "@middlewares";
+import {  Tokens } from "@middlewares";
 import { errorMessage,statuscode } from "@constants";
 
 const logoutservice = new LogOutService();
@@ -8,7 +8,7 @@ const logoutservice = new LogOutService();
 export class LogOutController {
      async logout(req: Request, res: Response): Promise<Response> {
           try {
-               const userToken: Tokens = (req as Request1).user;
+               const userToken: Tokens = req.user;
                const responsedata = await logoutservice.logoutuser(
                     userToken.id as string
                );

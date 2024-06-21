@@ -4,4 +4,5 @@ export const statuscode = {
      error: 500,
      NotFound: 404,
      forbidden: 403,
+     alreadyexits:409,
 };

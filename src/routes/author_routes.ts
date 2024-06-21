@@ -8,26 +8,23 @@ const author_controller = new AuthorController();
 const rolemiddleware = new RoleMiddleware();
 const validationmiddleware = new ValidateMiddleware(authorSchemaValidate);
 
-author_route.get("/getauthors", author_controller.getAuthors);
+author_route.get("/filterauthor", author_controller.getAuthorByFilteration);
 author_route.post(
-     "/addauthor",
-     rolemiddleware.jwtAuthRole,
-     validationmiddleware.validator,
-     author_controller.createAuthor
+  "/addauthor",
+  rolemiddleware.jwtAuthRole,
+  validationmiddleware.validator,
+  author_controller.createAuthor
 );
-author_route.get(
-     "/getauthorbyid/:id", 
-     author_controller.getAuthorById
-);
+author_route.get("/getauthors", author_controller.getAuthors);
 author_route.put(
-     "/updateauthor/:id",
-     rolemiddleware.jwtAuthRole,
-     author_controller.updateAuthor
+  "/updateauthor/:id",
+  rolemiddleware.jwtAuthRole,
+  author_controller.updateAuthor
 );
 author_route.delete(
-     "/deleteauthor/:id",
-     rolemiddleware.jwtAuthRole,
-     author_controller.deleteAuthor
+  "/deleteauthor/:id",
+  rolemiddleware.jwtAuthRole,
+  author_controller.deleteAuthor
 );
 
 export default author_route;

@@ -7,10 +7,10 @@ import { errorMessage ,statuscode} from "@constants";
 const author_service = new AuthorService();
 
 export class AuthorController {
-     async getAuthors(req: Request, res: Response): Promise<Response> {
+     async getAuthorByFilteration(req: Request, res: Response): Promise<Response> {
           try {
                const searchTerm: any = req.query;
-               const responsedata = await author_service.getAuthor(searchTerm);
+               const responsedata = await author_service.getAuthorByFilteration(searchTerm);
 
                if (responsedata.status) {
                     return res
@@ -62,10 +62,10 @@ export class AuthorController {
           }
      }
 
-     async getAuthorById(req: Request, res: Response) {
+     async getAuthors(req: Request, res: Response) {
           try {
                const id = req.params.id;
-               const responsedata = await author_service.getAuthorById(id);
+               const responsedata = await author_service.getAuthors(id);
 
                if (responsedata.status) {
                     return res

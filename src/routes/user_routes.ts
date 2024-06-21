@@ -29,7 +29,6 @@ user_route.post(
 );
 user_route.post(
      "/login",
-     uservalidatemiddleware.validator,
      login_controller.login
 );
 user_route.get(
@@ -44,9 +43,9 @@ user_route.post(
      logout_controller.logout
 );
 user_route.get(
-     "/getuserbyid/:id",
+     "/getuserbyid",
      middleware.jwtAuthUser,
-     rolemiddleware.jwtAuthRole,
+     // rolemiddleware.jwtAuthRole,
      user_controller.getUserById
 );
 user_route.put(

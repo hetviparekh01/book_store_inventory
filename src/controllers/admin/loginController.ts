@@ -11,13 +11,12 @@ export class LoginController {
                // const passwordwithouthasded: string = req.body.password;
                // const role=req.body.role;
 
-               const { name, password, role } = req.body;
+               const { name, password } = req.body;
 
                // const userdata:object={name,passwordwithouthasded,role}
                const responsedata = await loginservice.login({
                     name,
-                    password,
-                    role,
+                    password
                } as IUser);
                if (responsedata.status) {
                     return res.status(statuscode.success).json(responsedata);

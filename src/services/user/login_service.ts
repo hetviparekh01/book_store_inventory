@@ -25,7 +25,7 @@ export class LoginService {
                } else {
                     const payload: Tokens = {
                          id: user.id,
-                         name: userdata.name,
+                         role: user.role,
                     };
                     const Accesstoken = middleware.generateAccessToken(payload);
                     const Refreshtoken =
@@ -34,9 +34,10 @@ export class LoginService {
                          refreshToken: Refreshtoken,
                     });
                     const responsedata = {
-                         messgae: successMessage.SuccessfullyUserLoggedIn,
+                         message: successMessage.SuccessfullyUserLoggedIn,
                          Accesstoken: Accesstoken,
                          Refreshtoken: Refreshtoken,
+                         role:user.role
                     };
                     return { status: true, content: responsedata };
                }

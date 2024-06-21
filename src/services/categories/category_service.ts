@@ -50,7 +50,7 @@ export class CategoryService {
      //           return { status: false, content: error.message };
      //      }
      // }
-     async getCategories(searchTerm: any): Promise<IResponseType> {
+     async getCategoriesByFilteration(searchTerm: any): Promise<IResponseType> {
           try {
                let regex = { $regex: searchTerm.search, $options: "i" };
 
@@ -146,9 +146,9 @@ export class CategoryService {
                return { status: false, content: error.message };
           }
      }
-     async getCategoryById(id: string): Promise<IResponseType> {
+     async getCategories(): Promise<IResponseType> {
           try {
-               const responsedata = await Category.findById(id);
+               const responsedata = await Category.find({});
                if (responsedata) {
                     return { status: true, content: responsedata };
                } else {

@@ -2,21 +2,21 @@ import jwt from "jsonwebtoken";
 import config from "config";
 import { Request, Response, NextFunction } from "express";
 import { errorMessage ,statuscode} from "@constants";
-const secretKey: String = config.get("secret-key") || "your-secret-key";
+const secretKey: String = config.get("secret-key") || "HETVIPAREKH";
 
 export interface Tokens {
      id: string;
-     name: string;
+     role: string;
 }
-
-export interface Request1 extends Request {
-     user: Tokens;
-}
-
+declare module 'express-serve-static-core'{
+     interface Request {
+         user:Tokens
+     }
+ }
 export class AuthMiddlewares {
      jwtAuthUser(req: Request, res: Response, next: NextFunction) {
-          const token: string | undefined = req.headers.authorization;
-
+          const token: string | undefined = req.headers.authorization?.split(' ')[1];
+          // console.log(token);
           if (!token) {
                return res
                     .status(statuscode.error)
@@ -26,9 +26,8 @@ export class AuthMiddlewares {
                     });
           }
           try {
-               // console.log(token);
                const decoded: any = jwt.verify(token, secretKey as string);
-               (req as Request1).user = decoded;
+               req.user = decoded;
                next();
           } catch (error: any) {
                return res

@@ -20,14 +20,13 @@ export class SignUpController {
                const responsedata = await signup_service.signup(
                     userdata as IUser
                );
-
                if (responsedata.status) {
                     return res
                          .status(statuscode.success)
                          .json(responsedata.content);
                } else {
                     return res
-                         .status(statuscode.error)
+                         .status(statuscode.alreadyexits)
                          .json(responsedata.content);
                }
           } catch (error: any) {

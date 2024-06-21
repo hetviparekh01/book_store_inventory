@@ -8,7 +8,7 @@ import { searchQuery,paginationQuerySkip,paginationQueryLimit } from "@utils";
 import { Author } from "@models";
 
 export class AuthorService {
-     async getAuthor(searchTerm: any): Promise<IResponseType> {
+     async getAuthorByFilteration(searchTerm: any): Promise<IResponseType> {
           try {
                let regex = { $regex: searchTerm.search, $options: "i" };
 
@@ -112,9 +112,9 @@ export class AuthorService {
                return { status: false, content: error.message };
           }
      }
-     async getAuthorById(id: string) {
+     async getAuthors(id: string) {
           try {
-               const responsedata = await Author.findById(id);
+               const responsedata = await Author.find({});
                if (responsedata) {
                     return { status: true, content: responsedata };
                } else {

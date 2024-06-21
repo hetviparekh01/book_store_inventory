@@ -48,4 +48,5 @@ export const FatalErrorMessage = {
      InvalidCredentials: "Invalid Credentials",
      UnauthorizedAction: "UnauthorizedAction",
      DataNotFound: "Data NOt Found",
+     AlreadyExitsUser:"User Already Exists"
 };

@@ -6,11 +6,11 @@ import { errorMessage ,statuscode} from "@constants";
 const category_service = new CategoryService();
 
 export class CategoryController {
-     async getCategories(req: Request, res: Response): Promise<Response> {
+     async getCategoriesByFilteration(req: Request, res: Response): Promise<Response> {
           try {
                const searchTerm: any = req.query;
                const responsedata =
-                    await category_service.getCategories(searchTerm);
+                    await category_service.getCategoriesByFilteration(searchTerm);
                if (responsedata.status) {
                     return res
                          .status(statuscode.success)
@@ -58,10 +58,10 @@ export class CategoryController {
           }
      }
 
-     async getCategoryById(req: Request, res: Response): Promise<Response> {
+     async getCategories(req: Request, res: Response): Promise<Response> {
           try {
                const id = req.params.id;
-               const responsedata = await category_service.getCategoryById(id);
+               const responsedata = await category_service.getCategories();
                if (responsedata.status) {
                     return res
                          .status(statuscode.success)

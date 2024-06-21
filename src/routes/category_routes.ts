@@ -9,8 +9,8 @@ const rolemiddleware = new RoleMiddleware();
 const validationmiddleware = new ValidateMiddleware(categorySchemaValidate);
 
 category_route.get(
-     "/getcategories", 
-     category_controller.getCategories
+     "/filtercategories", 
+     category_controller.getCategoriesByFilteration
 );
 category_route.post(
      "/addcategory",
@@ -19,8 +19,8 @@ category_route.post(
      category_controller.createCategory
 );
 category_route.get(
-     "/getcategorybyid/:id",
-     category_controller.getCategoryById
+     "/getcategories",
+     category_controller.getCategories
 );
 category_route.put(
      "/updatecategory/:id",

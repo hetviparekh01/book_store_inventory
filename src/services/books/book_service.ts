@@ -6,6 +6,7 @@ import {
 } from "@constants";
 import { IResponseType,IBook} from "@interfaces";
 import { searchQuery,paginationQueryLimit, paginationQuerySkip } from "@utils";
+import { server } from "typescript";
 
 export class BookService {
      // async getBooks(searchTerm: any): Promise<IResponseType> {
@@ -146,9 +147,13 @@ export class BookService {
      //     //     return { book, page: `${searchTerm.page}/${book.length}` }
      //     // }
      // }
-     async getbook(searchTerm: any): Promise<IResponseType> {
+     async getBooksByFilteration(searchTerm: any): Promise<IResponseType> {
           try {
-               let searchfeild=searchTerm.search.trim()
+               let searchfeild
+               console.log(searchTerm);
+               if(searchTerm.search){
+                    searchfeild=searchTerm.search.trim()
+               }
                let regex = { $regex:searchfeild, $options: "i" };
 
                let feildArray:any[][]=[]
@@ -299,9 +304,42 @@ export class BookService {
                return { status: false, content: error.message };
           }
      }
-     async getBookById(id: string): Promise<IResponseType> {
+     async getBook(): Promise<IResponseType> {
           try {
-               const responsedata = await Book.findById(id);
+               const responsedata = await Book.aggregate([
+                    {
+                      $lookup: {
+                        from: "authors",
+                        localField: "author",
+                        foreignField: "_id",
+                        as: "authorDetails"
+                      }
+                    },
+                    {
+                      $lookup: {
+                        from: "categories",
+                        localField: "category",
+                        foreignField: "_id",
+                        as: "categoryDetails"
+                      }
+                    },
+                    {
+                      $unwind: {
+                        path: "$authorDetails",
+                      }
+                    },
+                    {
+                      $unwind: {
+                        path: "$categoryDetails",
+                      }
+                    },
+                    {
+                         $project: {
+                              author:0,
+                           category:0,
+                         }
+                    }
+                  ]);
                if (responsedata) {
                     return { status: true, content: responsedata };
                } else {

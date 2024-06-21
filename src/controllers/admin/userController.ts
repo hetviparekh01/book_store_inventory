@@ -38,7 +38,7 @@ export class UserController {
 
      async getUserById(req: Request, res: Response): Promise<Response> {
           try {
-               const id = req.params.id;
+               const id = req.user.id;
                const responsedata = await userservice.getUserById(id);
 
                if (responsedata.status) {
