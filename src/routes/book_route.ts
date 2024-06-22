@@ -1,11 +1,10 @@
 import express, { Router } from "express";
 import { BookController } from "@controllers";
-import { RoleMiddleware, ValidateMiddleware } from "@middlewares";
+import {  ValidateMiddleware, roleVerify } from "@middlewares";
 import { bookSchemaValidate } from "../validations/validations";
 
 const book_route: Router = express.Router();
 const book_controller = new BookController();
-const rolemiddleware = new RoleMiddleware();
 const validationmiddleware = new ValidateMiddleware(bookSchemaValidate);
 
 book_route.get(
@@ -14,7 +13,7 @@ book_route.get(
 );
 book_route.post(
      "/addbook",
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin','author']),
      validationmiddleware.validator,
      book_controller.createBook
 );
@@ -24,13 +23,17 @@ book_route.get(
 );
 book_route.put(
      "/updatebook/:id",
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin','author']),
      book_controller.updateBook
 );
 book_route.delete(
      "/deletebook/:id",
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin','author']),
      book_controller.deleteBook
+);
+book_route.get(
+     "/getbookbyid/:id",
+      book_controller.getBookById
 );
 
 export default book_route;

@@ -1,11 +1,10 @@
 import express, { Router } from "express";
 import { CategoryController } from "@controllers";
-import { RoleMiddleware, ValidateMiddleware } from "@middlewares";
+import {  ValidateMiddleware, roleVerify } from "@middlewares";
 import { categorySchemaValidate } from "../validations/validations";
 
 const category_route: Router = express.Router();
 const category_controller = new CategoryController();
-const rolemiddleware = new RoleMiddleware();
 const validationmiddleware = new ValidateMiddleware(categorySchemaValidate);
 
 category_route.get(
@@ -14,7 +13,7 @@ category_route.get(
 );
 category_route.post(
      "/addcategory",
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin']),
      validationmiddleware.validator,
      category_controller.createCategory
 );
@@ -24,12 +23,12 @@ category_route.get(
 );
 category_route.put(
      "/updatecategory/:id",
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin']),
      category_controller.updateCategory
 );
 category_route.delete(
      "/deletecategory/:id",
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin']),
      category_controller.deleteCategory
 );
 

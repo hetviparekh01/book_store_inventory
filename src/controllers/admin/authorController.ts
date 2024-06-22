@@ -85,6 +85,31 @@ export class AuthorController {
                     });
           }
      }
+     
+     async getAuthorByName(req: Request, res: Response) {
+          try {
+               const name= req.query.name;
+               const responsedata = await author_service.getAuthorByName(name as string);
+
+               if (responsedata.status) {
+                    return res
+                         .status(statuscode.success)
+                         .json({content:responsedata.content});
+               } else {
+                    return res
+                         .status(statuscode.NotFound)
+                         .json(responsedata.content);
+               }
+          } catch (error: any) {
+               return res
+                    .status(statuscode.error)
+                    .json({
+                         status: false,
+                         content: errorMessage.ErrorInGettingAuthor,
+                    });
+          }
+     }
+
 
      async updateAuthor(req: Request, res: Response): Promise<Response> {
           try {

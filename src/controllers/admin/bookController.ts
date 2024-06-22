@@ -75,6 +75,7 @@ export class BookController {
                     description,
                     price,
                };
+               console.log(bookdata);
                const responsedata = await book_service.createBook(
                     bookdata as IBook
                );
@@ -103,6 +104,28 @@ export class BookController {
                     return res
                          .status(statuscode.success)
                          .json(responsedata.content);
+               } else {
+                    return res
+                         .status(statuscode.error)
+                         .json(responsedata.content);
+               }
+          } catch (error: any) {
+               return res
+                    .status(statuscode.error)
+                    .json({
+                         status: false,
+                         content: errorMessage.ErrorInGettingBook,
+                    });
+          }
+     }
+     async getBookById(req: Request, res: Response): Promise<Response> {
+          try {
+               const id=req.params.id
+               const responsedata = await book_service.getBookById(id as string);
+               if (responsedata.status) {
+                    return res
+                         .status(statuscode.success)
+                         .json({content:responsedata.content});
                } else {
                     return res
                          .status(statuscode.error)
@@ -180,3 +203,4 @@ export class BookController {
           }
      }
 }
+//full form of json ""

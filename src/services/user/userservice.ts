@@ -10,9 +10,13 @@ import { IUser } from "@interfaces";
 export class UserService {
      async getUsers(): Promise<IResponseType> {
           try {
-               const responsedata = await User.find();
+               const responsedata = await User.aggregate([{
+                    $project: {
+                      password:0
+                    }
+                  }]);
                if (responsedata.length === 0) {
-                    throw new Error(errorMessage.ErrorInGettingUser);
+                    throw new Error(errorMessage.ErrorInGettingUser); 
                } else {
                     return { status: true, content: responsedata };
                }

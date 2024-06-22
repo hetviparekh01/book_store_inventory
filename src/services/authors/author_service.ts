@@ -124,6 +124,18 @@ export class AuthorService {
                return { status: false, content: error.message };
           }
      }
+     async getAuthorByName(name: string) {
+          try {
+               const responsedata = await Author.findOne({name:name});
+               if (responsedata) {
+                    return { status: true, content: responsedata };
+               } else {
+                    throw new Error(FatalErrorMessage.AuthorNotFound);
+               }
+          } catch (error: any) {
+               return { status: false, content: error.message };
+          }
+     }
      async updateAuthor(authorid: string, authordata: IAuthor) {
           try {
                const responsedata = await Author.findByIdAndUpdate(authorid, {

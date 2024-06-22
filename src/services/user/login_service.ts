@@ -37,7 +37,8 @@ export class LoginService {
                          message: successMessage.SuccessfullyUserLoggedIn,
                          Accesstoken: Accesstoken,
                          Refreshtoken: Refreshtoken,
-                         role:user.role
+                         role:user.role,
+                         name:user.name,
                     };
                     return { status: true, content: responsedata };
                }

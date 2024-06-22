@@ -7,8 +7,8 @@ import {
 } from "@controllers";
 import {
      AuthMiddlewares,
-     RoleMiddleware,
      ValidateMiddleware,
+     roleVerify,
 } from "@middlewares";
 import { userSchemaValidate } from "../validations/validations";
 
@@ -19,7 +19,6 @@ const login_controller = new LoginController();
 const logout_controller = new LogOutController();
 const signup_controller = new SignUpController();
 const middleware = new AuthMiddlewares();
-const rolemiddleware = new RoleMiddleware();
 const uservalidatemiddleware = new ValidateMiddleware(userSchemaValidate);
 
 user_route.post(
@@ -34,7 +33,7 @@ user_route.post(
 user_route.get(
      "/getusers",
      middleware.jwtAuthUser,
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin']),
      user_controller.getUsers
 );
 user_route.post(
@@ -45,7 +44,6 @@ user_route.post(
 user_route.get(
      "/getuserbyid",
      middleware.jwtAuthUser,
-     // rolemiddleware.jwtAuthRole,
      user_controller.getUserById
 );
 user_route.put(
@@ -56,7 +54,7 @@ user_route.put(
 user_route.delete(
      "/deleteuser/:id",
      middleware.jwtAuthUser,
-     rolemiddleware.jwtAuthRole,
+     roleVerify(['admin']),
      user_controller.deleteUser
 );
 

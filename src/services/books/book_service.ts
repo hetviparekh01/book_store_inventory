@@ -7,6 +7,7 @@ import {
 import { IResponseType,IBook} from "@interfaces";
 import { searchQuery,paginationQueryLimit, paginationQuerySkip } from "@utils";
 import { server } from "typescript";
+import mongoose from "mongoose";
 
 export class BookService {
      // async getBooks(searchTerm: any): Promise<IResponseType> {
@@ -332,6 +333,56 @@ export class BookService {
                       $unwind: {
                         path: "$categoryDetails",
                       }
+                    },
+                    {
+                         $project: {
+                              author:0,
+                           category:0,
+                         }
+                    }
+                  ]);
+               if (responsedata) {
+                    return { status: true, content: responsedata };
+               } else {
+                    throw new Error(FatalErrorMessage.BookNotFound);
+               }
+          } catch (error: any) {
+               return { status: false, content: error.message };
+          }
+     }
+     async getBookById(id:string): Promise<IResponseType> {
+          try {
+               const responsedata = await Book.aggregate([
+                    {
+                      $lookup: {
+                        from: "authors",
+                        localField: "author",
+                        foreignField: "_id",
+                        as: "authorDetails"
+                      }
+                    },
+                    {
+                      $lookup: {
+                        from: "categories",
+                        localField: "category",
+                        foreignField: "_id",
+                        as: "categoryDetails"
+                      }
+                    },
+                    {
+                      $unwind: {
+                        path: "$authorDetails",
+                      }
+                    },
+                    {
+                      $unwind: {
+                        path: "$categoryDetails",
+                      }
+                    },
+                    {
+                         $match:{
+                              _id:new mongoose.Types.ObjectId(id)
+                         }
                     },
                     {
                          $project: {

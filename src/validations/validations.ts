@@ -12,7 +12,7 @@ export const bookSchemaValidate = Yup.object({
      category: Yup.string().required("category is required"),
      ISBN: Yup.number().required("ISBN is required"),
      description: Yup.string().required("description is required"),
-     price: Yup.string().required("price is required"),
+     price: Yup.number().required("price is required"),
 }).noUnknown("You are adding an extra feild").strict();
 
 export const authorSchemaValidate = Yup.object({
