@@ -8,6 +8,7 @@ import { IResponseType,IBook} from "@interfaces";
 import { searchQuery,paginationQueryLimit, paginationQuerySkip } from "@utils";
 import { server } from "typescript";
 import mongoose from "mongoose";
+import { page } from "pdfkit";
 
 export class BookService {
      // async getBooks(searchTerm: any): Promise<IResponseType> {
@@ -148,15 +149,15 @@ export class BookService {
      //     //     return { book, page: `${searchTerm.page}/${book.length}` }
      //     // }
      // }
-     async getBooksByFilteration(searchTerm: any): Promise<IResponseType> {
+     async  getBooksByFilteration(searchTerm: any): Promise<IResponseType> {
           try {
                let searchfeild
-               console.log(searchTerm);
+               // console.log(searchTerm.limit);
                if(searchTerm.search){
                     searchfeild=searchTerm.search.trim()
                }
                let regex = { $regex:searchfeild, $options: "i" };
-
+               // console.log(regex);
                let feildArray:any[][]=[]
                let and:object[]=[]
                let or:object[]=[]
@@ -170,11 +171,18 @@ export class BookService {
                if(searchTerm.filter_category){
                     and.push({"category_details.name":searchTerm.filter_category})
                }
-              
-               feildArray.push(and,or);
+               let paginationskipquery
+               let paginationlimitquery
+               feildArray.push(and,or); 
+               if(searchTerm.limit==='all' || !searchTerm.limit){
+                    paginationlimitquery=null;
+                    paginationskipquery=null
+               }else{
+                    
+                    paginationskipquery=paginationQuerySkip(searchTerm);
+                    paginationlimitquery=paginationQueryLimit(searchTerm)
+               }
                let dynamicquery=searchQuery(feildArray as any,searchTerm)
-               let paginationskipquery=paginationQuerySkip(searchTerm)
-               let paginationlimitquery=paginationQueryLimit(searchTerm)
                // console.log(dynamicquery);
 
                
@@ -220,7 +228,7 @@ export class BookService {
                               from: "authors",
                               localField: "author",
                               foreignField: "_id",
-                              as: "author_details",
+                              as: "authorDetails",
                          },
                     },
                     {
@@ -228,18 +236,18 @@ export class BookService {
                               from: "categories",
                               localField: "category",
                               foreignField: "_id",
-                              as: "category_details",
+                              as: "categoryDetails",
                          },
                     },
                     {
                          $unwind: {
-                              path: "$author_details",
+                              path: "$authorDetails",
                               // includeArrayIndex: "string",
                          },
                     },
                     {
                          $unwind: {
-                              path: "$category_details",
+                              path: "$categoryDetails",
                               // includeArrayIndex: "string",
                          },
                     },
@@ -254,21 +262,16 @@ export class BookService {
                          }
                     },
                     dynamicquery,
+                    ...(paginationskipquery ? [paginationskipquery] : []),
+                    ...(paginationlimitquery ? [paginationlimitquery] : []),
                     {
                          $project: {
-                              title: 1,
-                              description: 1,
-                              "author_details.name": 1,
-                              "category_details.name": 1,
-                              ISBN: 1,
-                              price: 1,
-                              date:1,
+                              author:0,
+                              category:0,
+                              
                          },
                     },
-                    paginationskipquery,
-                    paginationlimitquery
                ]);
-               
                if (responsedata) {
                     return {
                          status: true,

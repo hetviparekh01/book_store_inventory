@@ -1,4 +1,4 @@
-import express from "express";
+     import express from "express";
 import router from "./src/routes/index";
 import { connectDB } from "./src/db/db";
 import config from "config";

@@ -36,7 +36,8 @@ export class BookController {
      async getBooksByFilteration(req: Request, res: Response): Promise<Response> {
           try {
                const searchTerm: any = req.query;
-
+               // console.log(searchTerm);
+               // console.log(searchTerm.search);
                //const {} = req.query
                const responsedata = await book_service.getBooksByFilteration(searchTerm);
                // console.log(responsedata.length);

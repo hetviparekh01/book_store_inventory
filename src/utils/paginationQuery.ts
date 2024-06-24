@@ -1,5 +1,6 @@
 export const paginationQuerySkip = (searchTerm: any) => {
     const limitsize = Number(searchTerm.limit) || 5 ;
+    
     const page = Number(searchTerm.page) || 1;
     const skip = (page - 1) * limitsize;
 
