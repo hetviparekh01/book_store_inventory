@@ -166,10 +166,10 @@ export class BookService {
                     or.push({'title':regex},{'description':regex})
                }
                if(searchTerm.filter_author){
-                   and.push({"author_details.name":searchTerm.filter_author})
+                   and.push({"authorDetails.name":searchTerm.filter_author})
                }
                if(searchTerm.filter_category){
-                    and.push({"category_details.name":searchTerm.filter_category})
+                    and.push({"categoryDetails.name":searchTerm.filter_category})
                }
                let paginationskipquery
                let paginationlimitquery
