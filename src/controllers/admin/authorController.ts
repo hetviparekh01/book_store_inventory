@@ -70,7 +70,7 @@ export class AuthorController {
                if (responsedata.status) {
                     return res
                          .status(statuscode.success)
-                         .json(responsedata.content);
+                         .json({content:responsedata.content,length:responsedata.length});
                } else {
                     return res
                          .status(statuscode.NotFound)

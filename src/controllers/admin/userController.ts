@@ -24,7 +24,7 @@ export class UserController {
                } else {
                     return res
                          .status(statuscode.NotFound)
-                         .json(responsedata.content);
+                         .json({content:responsedata.content,length:responsedata.length});
                }
           } catch (error: any) {
                return res

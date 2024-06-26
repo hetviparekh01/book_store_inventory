@@ -116,7 +116,7 @@ export class AuthorService {
           try {
                const responsedata = await Author.find({});
                if (responsedata) {
-                    return { status: true, content: responsedata };
+                    return { status: true, content: responsedata ,length:responsedata.length};
                } else {
                     throw new Error(FatalErrorMessage.AuthorNotFound);
                }

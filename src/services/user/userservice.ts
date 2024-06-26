@@ -18,7 +18,7 @@ export class UserService {
                if (responsedata.length === 0) {
                     throw new Error(errorMessage.ErrorInGettingUser); 
                } else {
-                    return { status: true, content: responsedata };
+                    return { status: true, content: responsedata,length:responsedata.length };
                }
           } catch (error: any) {
                return { status: false, content: error.message };
